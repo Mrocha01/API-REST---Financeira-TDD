@@ -7,6 +7,6 @@ test("Deve responder na porta 3001", () => {
   // verificar a resposta 200
 
   return request.get("/").then((res) => {
-    expect(res.status).toBe("200");
+    expect(res.status).toBe(200);
   });
 });
