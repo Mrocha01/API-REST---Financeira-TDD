@@ -10,8 +10,8 @@ app.use(express.json());
 app.db = knex(knexfile.test);
 
 consign({ cwd: "src", verbose: false })
-  .then("./routes")
-  .include("./config/routes.js")
+  .include("./routes")
+  .then("./config/routes.js")
   .into(app);
 
 app.get("/", (req, res) => {

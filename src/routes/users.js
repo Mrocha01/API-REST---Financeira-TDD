@@ -1,3 +1,5 @@
+// Controller
+
 module.exports = (app) => {
   const findAll = (req, res) => {
     app.db('users').select().then(result => {
