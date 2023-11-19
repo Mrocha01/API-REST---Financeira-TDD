@@ -13,7 +13,8 @@ app.db = knex(knexfile.test);
 app.use(knexLogger(app.db));
 
 consign({ cwd: "src", verbose: false })
-  .include("./routes")
+  .include('./services')
+  .then("./routes")
   .then("./config/routes.js")
   .into(app);
 
