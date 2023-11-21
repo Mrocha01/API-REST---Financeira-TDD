@@ -14,7 +14,14 @@ module.exports = (app) => {
                 return res.status(200).json(result)
             });
     };
+
+    const getById = (req, res) => {
+        app.services.account.findOne({id: req.params.id})
+            .then((result) => {
+                return res.status(200).json(result)
+            });
+    };
   
-    return { create, getAll };
+    return { create, getAll, getById };
   };
   
