@@ -20,8 +20,18 @@ test("Deve inserir uma conta com sucesso", () => {
     .then((result) => {
         expect(result.status).toBe(201);
         expect(result.body.name).toBe('Acc #1');
-    })
-})
+    });
+});
+
+test("Não deve inserir uma conta sem nome", () => {
+    return request(app)
+    .post(MAIN_ROUTE)
+    .send({ user_id: user.id })
+    .then((result) => {
+        expect(result.status).toBe(400);
+        expect(result.body.error).toBe("Nome é um atributo obrigatório!");
+    });
+});
 
 test("Deve listar todas as contas", () => {
     return app.db('accounts')
@@ -46,7 +56,7 @@ test("Deve retornar uma conta por Id", () => {
         expect(res.status).toBe(200);
         expect(res.body.name).toBe("Acc By Id");
         expect(res.body.user_id).toBe(user.id);        
-     })  
+     });
 });
 
 test("Deve alterar uma conta", () => {
