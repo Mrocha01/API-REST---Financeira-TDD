@@ -16,7 +16,7 @@ module.exports = (app) => {
     };
 
     const getById = (req, res) => {
-        app.services.account.findOne({id: req.params.id})
+        app.services.account.findOne(req.params.id)
             .then((result) => {
                 return res.status(200).json(result)
             });

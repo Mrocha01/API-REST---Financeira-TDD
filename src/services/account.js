@@ -8,9 +8,9 @@ module.exports = (app) => {
         return app.db('accounts');
     }
 
-    const findOne = (filter = {}) => {
+    const findOne = (id) => {
         return app.db('accounts')
-        .where(filter)
+        .where({id})
         .first();
     }
 
