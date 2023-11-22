@@ -28,7 +28,14 @@ module.exports = (app) => {
                 return res.status(200).json(result[0])
             });
     };
+
+    const deleteById = (req, res) => {
+        app.services.account.deleteOne(req.params.id)
+            .then(() => {
+                return res.status(204).send()
+            });
+    };
   
-    return { create, getAll, getById, update };
+    return { create, getAll, getById, update, deleteById };
   };
   
