@@ -20,6 +20,7 @@ test("Deve inserir usuario com sucesso", () => {
     .then((res) => {
       expect(res.statusCode).toBe(201);
       expect(res.body.name).toBe("Walter Mitty");
+      expect(res.body).not.toHaveProperty("passwd");
     });
 });
 

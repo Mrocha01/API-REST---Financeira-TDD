@@ -2,7 +2,7 @@ const ValidationError = require('../errors/ValidatonError');
 
 module.exports = (app) => {
     const findAll = (filter = {}) => {
-        return app.db('users').where(filter).select();
+        return app.db('users').where(filter).select(["id", "name","email"]);
     };
 
     const save = async (user) => {
@@ -22,7 +22,7 @@ module.exports = (app) => {
             throw new ValidationError("E-mail já cadastrado!");
         }
 
-        return app.db('users').insert(user, '*');
+        return app.db('users').insert(user, ["id", "name","email"]);
     };
 
     return { findAll, save };
