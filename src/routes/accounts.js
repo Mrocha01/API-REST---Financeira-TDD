@@ -1,41 +1,53 @@
 // Controller
 
 module.exports = (app) => {  
-    const create = (req, res) => {
+    const create = (req, res, next) => {
         app.services.account.save(req.body)
             .then((result) => {
                 return res.status(201).json(result[0]);
             })
             .catch((err) => {
-                res.status(400).json({error: err.message});
+                next(err);
             });
     };
 
-    const getAll = (req, res) => {
+    const getAll = (req, res, next) => {
         app.services.account.findAll()
             .then((result) => {
                 return res.status(200).json(result);
+            })
+            .catch((err) => {
+                next(err);
             });
     };
 
-    const getById = (req, res) => {
+    const getById = (req, res, next) => {
         app.services.account.findOne(req.params.id)
             .then((result) => {
                 return res.status(200).json(result);
+            })
+            .catch((err) => {
+                next(err);
             });
     };
 
-    const update = (req, res) => {
+    const update = (req, res, next) => {
         app.services.account.updateOne(req.params.id, req.body)
             .then((result) => {
                 return res.status(200).json(result[0]);
+            })
+            .catch((err) => {
+                next(err);
             });
     };
 
-    const deleteById = (req, res) => {
+    const deleteById = (req, res, next) => {
         app.services.account.deleteOne(req.params.id)
             .then(() => {
                 return res.status(204).send();
+            })
+            .catch((err) => {
+                next(err);
             });
     };
   
