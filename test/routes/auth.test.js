@@ -36,3 +36,13 @@ test("Não deve autenticar usuario com senha errada", () => {
         expect(res.body.error).toBe("Usuario ou senha inválidos!");
     });
 });
+
+test("Não deve autenticar usuario inexistente", () => {
+    return request(app)
+    .post("/auth/signin")
+    .send({email: "nãoExiste@gmail.com", passwd: "123456"})
+    .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe("Usuario ou senha inválidos!");
+    });
+});

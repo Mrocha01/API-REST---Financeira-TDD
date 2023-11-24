@@ -9,6 +9,10 @@ module.exports = (app) => {
         app.services.user
         .findOne({email: req.body.email})
         .then((user) => {
+            if(!user) {
+                throw new ValidationError("Usuario ou senha inválidos!");
+            }
+            
             if(bcrypt.compareSync(req.body.passwd, user.passwd)){
                 const payload = {
                     id: user.id,
