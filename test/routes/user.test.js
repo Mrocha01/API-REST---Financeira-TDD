@@ -24,6 +24,19 @@ test("Deve inserir usuario com sucesso", () => {
     });
 });
 
+test("Deve armazenar senha criptografada", async () => {
+  const res = await request(app)
+  .post("/users")
+  .send({ name: "Walter Mitty", email: `${Date.now()}@mail.com`, passwd:"12345"});
+  expect(res.status).toBe(201);
+
+  const {id} = res.body;
+  const userDB = await app.services.user.findOne({id});
+  
+  expect(userDB.passwd).not.toBeUndefined();
+  expect(userDB.passwd).not.toBe("12345");
+});
+
 test("Não deve inserir um usuario sem nome", () => {
   return request(app)
   .post("/users")
