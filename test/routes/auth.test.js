@@ -2,7 +2,6 @@ const request = require("supertest");
 const app = require("../../src/app");
 
 
-
 test("Deve criar usuario via signup", () => {
     const mail = `${Date.now()}@mail.com`;
 
