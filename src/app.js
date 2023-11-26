@@ -16,7 +16,7 @@ consign({ cwd: "src", verbose: false })
   .include('./config/passport.js')
   .then('./services')
   .then("./routes")
-  .then("./config/routes.js")
+  .then("./config/router.js")
   .into(app);
 
 app.get("/", (req, res) => {

@@ -1,11 +1,15 @@
 const jwt = require("jwt-simple");
 const bcrypt = require("bcrypt");
 const ValidationError = require('../errors/ValidatonError');
+const express = require('express');
+
 
 const secret = "Segredo!";
 
 module.exports = (app) => {
-    const signin = (req, res, next) => {
+    const router = express.Router();
+
+    router.post("/signin", (req, res, next) => {
         app.services.user
         .findOne({email: req.body.email})
         .then((user) => {
@@ -28,7 +32,18 @@ module.exports = (app) => {
         .catch((err) => {
             return next(err);
         });
-    };
+    });
 
-    return { signin };
+    router.post("/signup", async(req, res, next) => {
+        try {
+          const result = await app.services.user.save(req.body);
+    
+          return res.status(201).json(result[0]);      
+    
+        } catch (err) {
+            return next(err);
+        }
+      });
+
+    return router;
 };
