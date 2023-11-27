@@ -1,7 +1,10 @@
 // Controller
+const express = require('express');
 
 module.exports = (app) => {  
-    const create = (req, res, next) => {
+    const router = express.Router();
+
+    router.post("/", (req, res, next) => {
         app.services.account.save(req.body)
             .then((result) => {
                 return res.status(201).json(result[0]);
@@ -9,9 +12,9 @@ module.exports = (app) => {
             .catch((err) => {
                 next(err);
             });
-    };
+    });
 
-    const getAll = (req, res, next) => {
+    router.get("/", (req, res, next) => {
         app.services.account.findAll()
             .then((result) => {
                 return res.status(200).json(result);
@@ -19,9 +22,9 @@ module.exports = (app) => {
             .catch((err) => {
                 next(err);
             });
-    };
+    });
 
-    const getById = (req, res, next) => {
+    router.get("/:id",(req, res, next) => {
         app.services.account.findOne(req.params.id)
             .then((result) => {
                 return res.status(200).json(result);
@@ -29,9 +32,9 @@ module.exports = (app) => {
             .catch((err) => {
                 next(err);
             });
-    };
+    });
 
-    const update = (req, res, next) => {
+    router.put("/:id",(req, res, next) => {
         app.services.account.updateOne(req.params.id, req.body)
             .then((result) => {
                 return res.status(200).json(result[0]);
@@ -39,9 +42,9 @@ module.exports = (app) => {
             .catch((err) => {
                 next(err);
             });
-    };
+    });
 
-    const deleteById = (req, res, next) => {
+    router.delete("/:id", (req, res, next) => {
         app.services.account.deleteOne(req.params.id)
             .then(() => {
                 return res.status(204).send();
@@ -49,8 +52,8 @@ module.exports = (app) => {
             .catch((err) => {
                 next(err);
             });
-    };
+    });
   
-    return { create, getAll, getById, update, deleteById };
+    return router;
   };
   
