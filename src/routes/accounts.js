@@ -15,7 +15,7 @@ module.exports = (app) => {
     });
 
     router.get("/", (req, res, next) => {
-        app.services.account.findAll()
+        app.services.account.find(req.user.id)
             .then((result) => {
                 return res.status(200).json(result);
             })
