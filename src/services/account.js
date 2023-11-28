@@ -10,8 +10,8 @@ module.exports = (app) => {
         .insert(account, '*');
     };
 
-    const findAll = () => {
-        return app.db('accounts');
+    const find = (userId) => {
+        return app.db('accounts').where({ user_id: userId });
     };
 
     const findOne = (id) => {
@@ -32,5 +32,5 @@ module.exports = (app) => {
         .del();
     };
 
-    return { save, findAll, findOne, updateOne, deleteOne };
+    return { save, find, findOne, updateOne, deleteOne };
 }; 
