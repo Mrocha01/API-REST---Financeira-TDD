@@ -45,6 +45,22 @@ test("Não deve inserir uma conta sem nome", () => {
     });
 });
 
+test("Não deve inserir uma conta com nome duplicado, para o mesmo usuario", () => {
+    return app.db('accounts')
+    .insert(
+        {name: 'Acc duplicada', user_id: user.id}, 
+    )
+    .then(() => request(app)
+                    .post(MAIN_ROUTE)
+                        .set("authorization", `bearer ${user.token}`)
+                            .send({name: 'Acc duplicada'})
+        )
+    .then((res) => {
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe("Já existe uma conta com este nome!");
+    });
+});
+
 // test("Deve listar todas as contas", () => {
 //     return app.db('accounts')
 //         .insert({name: 'Acc list', user_id: user.id})
