@@ -46,7 +46,7 @@ test("Deve listar apenas as transações do usuario", () => {
         }));
 });
 
-test('Deve inserir uma transação com sucesso', () => {
+test("Deve inserir uma transação com sucesso", () => {
     return request(app).post(MAIN_ROUTE)
         .set("authorization", `bearer ${user.token}`)
             .send({ description: "New T", date: new Date(), amount: 100, type: "I", acc_id: accUser.id})
@@ -54,4 +54,38 @@ test('Deve inserir uma transação com sucesso', () => {
         expect(res.status).toBe(201);
         expect(res.body[0].acc_id).toBe(accUser.id);
     });
+});
+
+//! Essa versão não me agradou muito, portanto refatorei logo abaixo
+// test("Deve retornar uma rota pelo ID", () => {
+//     return app.db('transactions')
+//     .insert({description: "T ID", date: new Date(), amount: 500, type: "I", acc_id: accUser.id}, ["id"])
+//         .then((transf) => // sem chaves {} "retorno implicito" do request(app)
+//             request(app)
+//                 .get(`${MAIN_ROUTE}/${transf[0].id}`)
+//                     .set("authorization", `bearer ${user.token}`)  
+//         .then((res) => {
+//             expect(res.status).toBe(200);
+//             expect(res.body.description).toBe("T ID");
+//             expect(res.body.id).toBe(transf[0].id);        
+//      }));
+// });
+
+//? Código ficou bem mais limpo e facil de ler sem os "thens" aninhados.
+test("Deve retornar uma rota pelo ID", async () => {
+    const transf = await app.db('transactions').insert({
+        description: "T ID",
+        date: new Date(),
+        amount: 500,
+        type: "I",
+        acc_id: accUser.id
+    }, ["id"]);
+
+    const res = await request(app)
+        .get(`${MAIN_ROUTE}/${transf[0].id}`)
+        .set("authorization", `bearer ${user.token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.description).toBe("T ID");
+    expect(res.body.id).toBe(transf[0].id);
 });

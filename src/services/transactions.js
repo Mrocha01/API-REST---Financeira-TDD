@@ -7,10 +7,16 @@ module.exports = (app) => {
                         .select();
     };
 
+    const findOne = (id) => {
+        return app.db("transactions")
+        .where(id)
+        .first();
+    }
+
     const save = (transaction) => {
         return app.db("transactions")
         .insert(transaction, '*');
     };
 
-    return { find, save };
+    return { find, save, findOne };
 };
