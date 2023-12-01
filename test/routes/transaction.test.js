@@ -72,7 +72,7 @@ test("Deve inserir uma transação com sucesso", () => {
 // });
 
 //? Código ficou bem mais limpo e facil de ler sem os "thens" aninhados.
-test("Deve retornar uma rota pelo ID", async () => {
+test("Deve retornar uma transação pelo ID", async () => {
     const transf = await app.db('transactions').insert({
         description: "T ID",
         date: new Date(),
@@ -87,5 +87,24 @@ test("Deve retornar uma rota pelo ID", async () => {
 
     expect(res.status).toBe(200);
     expect(res.body.description).toBe("T ID");
+    expect(res.body.id).toBe(transf[0].id);
+});
+
+test('Deve alterar uma transação', async () => {
+    const transf = await app.db('transactions').insert({
+        description: "To update",
+        date: new Date(),
+        amount: 300,
+        type: "I",
+        acc_id: accUser.id
+    }, ["id"]);
+
+    const res = await request(app)
+        .put(`${MAIN_ROUTE}/${transf[0].id}`)
+        .set("authorization", `bearer ${user.token}`)
+        .send({ description: "Updated D"})
+
+    expect(res.status).toBe(200);
+    expect(res.body.description).toBe("Updated D");
     expect(res.body.id).toBe(transf[0].id);
 });
