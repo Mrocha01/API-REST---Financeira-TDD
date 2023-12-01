@@ -1,7 +1,20 @@
 const express = require('express');
+const RecursoIndevidoError = require("../errors/RecursoIndevidoError");
 
 module.exports = (app) => {
     const router = express.Router();
+
+    router.param("id", (req, res, next) => {
+        app.services.transactions.find(req.user.id, { 'transactions.id': req.params.id})
+        .then((result) => {
+            if(result.length > 0){
+                return next();
+            } else throw new RecursoIndevidoError();
+        })
+        .catch((err) => {
+            return next(err);
+        });
+    });
 
     router.get('/', (req, res, next) => {
         app.services.transactions.find(req.user.id)

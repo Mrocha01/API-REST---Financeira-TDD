@@ -124,3 +124,20 @@ test('Deve remover uma transação', async () => {
 
     expect(res.status).toBe(204);
 });
+
+test("Não deve remover uma conta de outro usuário", async () => {
+    const transf = await app.db('transactions').insert({
+        description: "To remove",
+        date: new Date(),
+        amount: 200,
+        type: "O",
+        acc_id: accUser2.id
+    }, ["id"]);
+
+    const res = await request(app)
+        .delete(`${MAIN_ROUTE}/${transf[0].id}`)
+        .set("authorization", `bearer ${user.token}`)
+
+        expect(res.status).toBe(403);
+        expect(res.body.error).toBe("Este recurso não pertence ao usuário!");
+});
