@@ -108,3 +108,19 @@ test('Deve alterar uma transação', async () => {
     expect(res.body.description).toBe("Updated D");
     expect(res.body.id).toBe(transf[0].id);
 });
+
+test('Deve remover uma transação', async () => {
+    const transf = await app.db('transactions').insert({
+        description: "To remove",
+        date: new Date(),
+        amount: 200,
+        type: "O",
+        acc_id: accUser.id
+    }, ["id"]);
+
+    const res = await request(app)
+        .delete(`${MAIN_ROUTE}/${transf[0].id}`)
+        .set("authorization", `bearer ${user.token}`)
+
+    expect(res.status).toBe(204);
+});
