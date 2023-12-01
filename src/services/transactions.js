@@ -9,7 +9,7 @@ module.exports = (app) => {
 
     const findOne = (id) => {
         return app.db("transactions")
-        .where(id)
+        .where({id})
         .first();
     }
 
