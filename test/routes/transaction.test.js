@@ -79,6 +79,60 @@ test("Transações de saida devem ser negativas", () => {
     });
 });
 
+test('Não deve inserir uma transação sem descrição', async () => {
+    const res = await request(app)
+    .post(MAIN_ROUTE)
+    .set("authorization", `bearer ${user.token}`)
+    .send({ date: new Date(), amount: 100, type: "I", acc_id: accUser.id });
+    
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("A descrição é obrigatória!")
+});
+
+test('Não deve inserir uma transação sem valor', async () => {
+    const res = await request(app)
+    .post(MAIN_ROUTE)
+    .set("authorization", `bearer ${user.token}`)
+    .send({ description: "New T", date: new Date(), type: "I", acc_id: accUser.id });
+    
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("O valor é obrigatório!")
+});
+
+test('Não deve inserir uma transação sem data', async () => {
+    const res = await request(app)
+    .post(MAIN_ROUTE)
+    .set("authorization", `bearer ${user.token}`)
+    .send({ description: "New T", amount: 100, type: "I", acc_id: accUser.id});
+    
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("A data é obrigatória!")
+});
+
+test('Não deve inserir uma transação sem tipo', async () => {
+    const res = await request(app)
+    .post(MAIN_ROUTE)
+    .set("authorization", `bearer ${user.token}`)
+    .send({ description: "New T", date: new Date(), amount: 100, acc_id: accUser.id})
+    
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("O tipo é obrigatório e deve ser válido!")
+});
+
+test('Não deve inserir uma transação sem conta', async () => {
+    const res = await request(app)
+    .post(MAIN_ROUTE)
+    .set("authorization", `bearer ${user.token}`)
+    .send({ description: "New T", date: new Date(), amount: 100, type: "I"})
+    
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Conta inválida ou não localizada!")
+});
+
 //! Essa versão não me agradou muito, portanto refatorei logo abaixo
 // test("Deve retornar uma rota pelo ID", () => {
 //     return app.db('transactions')

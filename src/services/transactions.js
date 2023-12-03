@@ -1,3 +1,5 @@
+const ValidationError = require('../errors/ValidatonError');
+
 module.exports = (app) => {
     const find = (userId, filter = {}) => {
         return app.db("transactions")
@@ -14,6 +16,26 @@ module.exports = (app) => {
     }
 
     const save = (transaction) => {
+        if(!transaction.description || transaction.description == "") {
+            throw new ValidationError("A descrição é obrigatória!");
+        }
+
+        if(!transaction.amount || transaction.amount == "") {
+            throw new ValidationError("O valor é obrigatório!");
+        }
+
+        if(!transaction.date || transaction.date == "") {
+            throw new ValidationError("A data é obrigatória!");
+        }
+
+        if(!transaction.type || (transaction.type !== "I" && transaction.type !== "O")) {
+            throw new ValidationError("O tipo é obrigatório e deve ser válido!");
+        }
+
+        if(!transaction.acc_id) {
+            throw new ValidationError("Conta inválida ou não localizada!");
+        }
+
         const newTransaction = { ...transaction };
 
         if((transaction.type === "I" && transaction.amount < 0) ||
