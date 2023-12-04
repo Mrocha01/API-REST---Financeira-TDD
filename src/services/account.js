@@ -7,7 +7,9 @@ module.exports = (app) => {
     };
 
     const findAny = (filter = {}) => {
-        return app.db('accounts').where(filter).first();
+        return app.db('accounts')
+        .where(filter)
+        .first();
     }
 
     const findOne = (id) => {
@@ -37,7 +39,13 @@ module.exports = (app) => {
         .update(account, '*');
     };
 
-    const deleteOne = (id) => {
+    const deleteOne = async (id) => {
+        const transaction = await app.services.transactions.findAny({acc_id: id});
+
+        if(transaction) {
+            throw new ValidationError("Essa conta possui transações associadas!")
+        }
+
         return app.db('accounts')
         .where({id})
         .del();

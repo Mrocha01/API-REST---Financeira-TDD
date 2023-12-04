@@ -110,7 +110,6 @@ describe('Ao tentar inserir uma transação inválida', () => {
 
     test('Não deve inserir uma transação sem conta', () => 
     testTemplate({ acc_id:null}, "Conta inválida ou não localizada!"));
-
 });
 
 // test('Não deve inserir uma transação sem descrição', async () => {
@@ -285,4 +284,21 @@ test("Não deve retornar uma conta de outro usuário", async () => {
 
         expect(res.status).toBe(403);
         expect(res.body.error).toBe("Este recurso não pertence ao usuário!");
+});
+
+test('Não deve remover conta com transação', async () => {
+    await app.db('transactions').insert({
+        description: "To remove",
+        date: new Date(),
+        amount: 200,
+        type: "O",
+        acc_id: accUser.id
+    }, ["id"]);
+
+    const res = await request(app)
+        .delete(`/v1/accounts/${accUser.id}`)
+        .set("authorization", `bearer ${user.token}`)
+    
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("Essa conta possui transações associadas!")
 });

@@ -15,6 +15,12 @@ module.exports = (app) => {
         .first();
     }
 
+    const findAny = (filter = {}) => {
+        return app.db("transactions")
+        .where(filter)
+        .first();
+    }
+
     const save = (transaction) => {
         if(!transaction.description || transaction.description == "") {
             throw new ValidationError("A descrição é obrigatória!");
@@ -59,5 +65,5 @@ module.exports = (app) => {
         .del();
     };
 
-    return { find, save, findOne, updateOne, deleteOne };
+    return { find, save, findOne, updateOne, deleteOne, findAny };
 };
