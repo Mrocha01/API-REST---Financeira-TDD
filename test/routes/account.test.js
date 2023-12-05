@@ -7,6 +7,7 @@ let user;
 let user2;
 
 beforeEach( async () => {
+
     const res = await app.services.user.save({
         name: 'User Account', 
         email: `${Date.now()}@mail.com`, 
@@ -75,7 +76,10 @@ test("Não deve inserir uma conta com nome duplicado, para o mesmo usuario", () 
 //             });
 // });
 
-test("Deve listar apenas as contas do usuario", () => {
+test("Deve listar apenas as contas do usuario", async () => {
+    await app.db("transactions").del();
+    await app.db("accounts").del();
+    
     return app.db('accounts')
         .insert([
             {name: 'Acc User #1', user_id: user.id}, 
