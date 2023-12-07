@@ -8,7 +8,7 @@ module.exports = (app) => {
         .select();
     }
 
-    const save = (transfer) => {
+    const save = async (transfer) => {
         if(!transfer.description || transfer.description == "") {
             throw new ValidationError("A descrição é obrigatória!");
         }
@@ -29,10 +29,34 @@ module.exports = (app) => {
             throw new ValidationError("A conta de origem ou destino é inválida");
         }
 
-        const newTransfer = { ...transfer };
         
-        return app.db("transfers")
-        .insert(newTransfer, '*');
+        const result = await app.db("transfers")
+        .insert(transfer, '*');
+
+        const transferId = result[0].id;
+
+        const transactions = [
+            {
+                description: `Transfer to acc # ${transfer.acc_dest_id}`,
+                date: transfer.date,
+                amount: transfer.amount * -1,
+                type: "O",
+                acc_id: transfer.acc_ori_id,
+                transfer_id: transferId
+            },
+            {
+                description: `Transfer from acc # ${transfer.acc_ori_id}`,
+                date: transfer.date,
+                amount: transfer.amount,
+                type: "O",
+                acc_id: transfer.acc_dest_id,
+                transfer_id: transferId
+            }
+        ]
+
+        await app.db("transactions").insert(transactions);
+
+        return result;
     };
    
 
