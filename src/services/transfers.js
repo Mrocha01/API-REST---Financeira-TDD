@@ -48,7 +48,7 @@ module.exports = (app) => {
                 description: `Transfer from acc # ${transfer.acc_ori_id}`,
                 date: transfer.date,
                 amount: transfer.amount,
-                type: "O",
+                type: "I",
                 acc_id: transfer.acc_dest_id,
                 transfer_id: transferId
             }
