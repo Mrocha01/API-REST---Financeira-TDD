@@ -64,7 +64,7 @@ describe("Ao salvar uma transferencia válida...", () => {
                  amount: 100, 
                  date: new Date()
                 })
-        .then( async (res) => {
+        .then((res) => {
             expect(res.status).toBe(201);
             expect(res.body[0].description).toBe("Regular Transfer");
 
@@ -101,4 +101,53 @@ describe("Ao salvar uma transferencia válida...", () => {
         expect(income.transfer_id).toBe(transferId)
         expect(outcome.transfer_id).toBe(transferId)
     });
+});
+
+describe('Ao tentar salvar uma transferencia inválida', () => {
+
+    let validTransfer;
+
+    beforeAll( async () => {
+        validTransfer = { 
+            description: "Regular Transfer",
+            user_id: 10000, 
+             acc_ori_id: 10000, 
+             acc_dest_id: 10001, 
+             amount: 100, 
+             date: new Date()
+            };
+    })
+
+    const testTemplate = (newData, errorMessage) => {
+        return request(app).post(MAIN_ROUTE)
+        .set("authorization", `bearer ${TOKEN}`)
+        .send({...validTransfer, ...newData})
+        .then((res) => {
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe(errorMessage)
+        })
+    };
+
+    test('Não deve inserir sem descrição', () => 
+        testTemplate({ description:null}, "A descrição é obrigatória!"));
+
+    test('Não deve inserir sem valor', () => 
+        testTemplate({ amount:null}, "O valor é obrigatório!"));
+
+    test('Não deve inserir sem data', () => 
+        testTemplate({ date:null}, "A data é obrigatória!"));
+
+    test('Não deve inserir sem conta de origem', () => 
+        testTemplate({ acc_ori_id: null}, "A conta de origem ou destino é inválida"));
+
+    test('Não deve inserir sem conta de destino', () => 
+        testTemplate({ acc_dest_id: null}, "A conta de origem ou destino é inválida"));
+
+    test('Não deve inserir se as contas de destino e origem forem as mesmas', () => 
+        testTemplate({ acc_dest_id: 10000 }, "A conta de origem ou destino é inválida")
+    );
+
+    test('Não deve inserir se as contas pertencerem a outro usuario', () => 
+        testTemplate({ acc_ori_id: 10002}, "Conta #10002 não pertence ao usuario!")
+    );
 });

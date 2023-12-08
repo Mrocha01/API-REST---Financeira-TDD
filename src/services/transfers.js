@@ -7,7 +7,7 @@ module.exports = (app) => {
         .where(filter)
         .select();
     }
-
+    
     const save = async (transfer) => {
         if(!transfer.description || transfer.description == "") {
             throw new ValidationError("A descrição é obrigatória!");
@@ -29,7 +29,17 @@ module.exports = (app) => {
             throw new ValidationError("A conta de origem ou destino é inválida");
         }
 
-        
+        if(transfer.acc_dest_id === transfer.acc_ori_id) {
+            throw new ValidationError("A conta de origem ou destino é inválida");
+        }
+
+        const accounts = await app.db('accounts').whereIn("id", [transfer.acc_dest_id, transfer.acc_ori_id]);
+
+        accounts.forEach(acc => {
+            if(acc.user_id !== parseInt(transfer.user_id, 10)) 
+        throw new ValidationError(`Conta #${acc.id} não pertence ao usuario!`)
+    });
+
         const result = await app.db("transfers")
         .insert(transfer, '*');
 
