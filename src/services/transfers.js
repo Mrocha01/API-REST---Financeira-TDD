@@ -33,13 +33,12 @@ module.exports = (app) => {
             throw new ValidationError("A conta de origem ou destino é inválida");
         }
 
-        const accounts = await app.db('accounts').whereIn("id", [transfer.acc_dest_id, transfer.acc_ori_id]);
+        const account = await app.db('accounts').where("id", transfer.acc_ori_id).first();
 
-        accounts.forEach(acc => {
-            if(acc.user_id !== parseInt(transfer.user_id, 10)) 
-        throw new ValidationError(`Conta #${acc.id} não pertence ao usuario!`)
-    });
-
+        if (!account || account.user_id !== parseInt(transfer.user_id, 10)) {
+            throw new ValidationError(`Conta #${transfer.acc_ori_id} não pertence ao usuario!`);
+        }
+        
         const result = await app.db("transfers")
         .insert(transfer, '*');
 
