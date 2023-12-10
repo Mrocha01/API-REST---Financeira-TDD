@@ -13,8 +13,8 @@ module.exports = (app) => {
         .where(filter)
         .first();
     }
-    
-    const save = async (transfer) => {
+
+    const validate = async (transfer) => {
         if(!transfer.description || transfer.description == "") {
             throw new ValidationError("A descrição é obrigatória!");
         }
@@ -44,6 +44,11 @@ module.exports = (app) => {
         if (!account || account.user_id !== parseInt(transfer.user_id, 10)) {
             throw new ValidationError(`Conta #${transfer.acc_ori_id} não pertence ao usuario!`);
         }
+    };
+    
+    const save = async (transfer) => {
+
+        await validate(transfer);
         
         const result = await app.db("transfers")
         .insert(transfer, '*');
@@ -75,6 +80,9 @@ module.exports = (app) => {
     };
 
     const updateOne = async (id, transfer) => {
+        
+        await validate(transfer);
+
         const result = await app.db('transfers')
         .where({id})
         .update(transfer, '*');
@@ -99,7 +107,7 @@ module.exports = (app) => {
         ]
 
         await app.db("transactions").where({transfer_id: id}).del();
-        
+
         await app.db("transactions").insert(transactions);
 
         return result;
