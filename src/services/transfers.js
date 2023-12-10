@@ -7,6 +7,12 @@ module.exports = (app) => {
         .where(filter)
         .select();
     }
+
+    const findOne = (filter = {}) => {
+        return app.db('transfers')
+        .where(filter)
+        .first();
+    }
     
     const save = async (transfer) => {
         if(!transfer.description || transfer.description == "") {
@@ -67,7 +73,38 @@ module.exports = (app) => {
 
         return result;
     };
+
+    const updateOne = async (id, transfer) => {
+        const result = await app.db('transfers')
+        .where({id})
+        .update(transfer, '*');
+
+        const transactions = [
+            {
+                description: `Transfer to acc # ${transfer.acc_dest_id}`,
+                date: transfer.date,
+                amount: transfer.amount * -1,
+                type: "O",
+                acc_id: transfer.acc_ori_id,
+                transfer_id: id
+            },
+            {
+                description: `Transfer from acc # ${transfer.acc_ori_id}`,
+                date: transfer.date,
+                amount: transfer.amount,
+                type: "I",
+                acc_id: transfer.acc_dest_id,
+                transfer_id: id
+            }
+        ]
+
+        await app.db("transactions").where({transfer_id: id}).del();
+        
+        await app.db("transactions").insert(transactions);
+
+        return result;
+    };
    
 
-    return { find, save };
+    return { find, save, findOne, updateOne };
 }; 
