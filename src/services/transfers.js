@@ -108,7 +108,17 @@ module.exports = (app) => {
 
         return result;
     };
+
+    const deleteOne = async (id) => {
+        await app.db("transactions")
+        .where({transfer_id: id})
+        .del();
+
+        return app.db("transfers")
+        .where({id})
+        .del();
+    };
    
 
-    return { find, save, findOne, updateOne, validate };
+    return { find, save, findOne, updateOne, validate, deleteOne };
 }; 

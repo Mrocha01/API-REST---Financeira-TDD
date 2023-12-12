@@ -35,6 +35,12 @@ module.exports = (app) => {
             .then(result => res.status(201).json(result))
             .catch(err => next(err));
     });
+
+    router.delete("/:id", (req, res, next) => {
+        app.services.transfers.deleteOne(req.params.id)
+            .then(() => res.status(204).send())
+            .catch(err=> next(err));
+    });
    
     return router;
 };

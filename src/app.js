@@ -31,6 +31,7 @@ app.use((err, req, res, next) => {
   } else if(name === "RecursoIndevidoError") {
     res.status(403).json({error: message});
   } else {
+    console.log(message);
     res.status(500).json({name, message, stack});
   }
   next(err);
