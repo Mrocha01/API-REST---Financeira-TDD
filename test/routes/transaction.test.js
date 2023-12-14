@@ -10,9 +10,11 @@ let accUser;
 let accUser2;
 
 beforeAll( async () => {
-    await app.db("transactions").del();
-    await app.db("accounts").del();
-    await app.db("users").del();    
+    await app.db("transactions").delete();
+    await app.db("transfers").delete();
+    await app.db("accounts").delete();
+    await app.db("users").delete();    
+    
     const users = await app.db("users").insert([
         {name:"User #1", email: "user@mail.com", passwd:"$2b$10$XHQ9iKlafRansEIm9STTaOtYwciVxxyboDrMeFeXwOJPuvjU.rVn2"},
         {name:"User #2", email: "user2@mail.com", passwd:"$2b$10$XHQ9iKlafRansEIm9STTaOtYwciVxxyboDrMeFeXwOJPuvjU.rVn2"},

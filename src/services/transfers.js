@@ -44,6 +44,14 @@ module.exports = (app) => {
         if (!account || account.user_id !== parseInt(transfer.user_id, 10)) {
             throw new ValidationError(`Conta #${transfer.acc_ori_id} não pertence ao usuario!`);
         }
+
+        // const accounts = await app.db("accounts").whereIn("id", [transfer.acc_dest_id, transfer.acc_ori_id]);
+
+        // accounts.forEach((acc) => {
+        //     if(acc.user_id !== parseInt(transfer.user_id, 10)) {
+        //         throw new ValidationError(`Conta #${transfer.acc_ori_id} não pertence ao usuario!`)
+        //     }
+        // });
     };
     
     const save = async (transfer) => {
